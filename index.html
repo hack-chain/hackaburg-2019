@@ -34,24 +34,63 @@
         <svg width="960" height="300"></svg>
     </div>
 </div>
+<script>
+    const IP = '34.65.75.228'
+
+    // Example:
+    // let response1 = {
+    //     'websites': {
+    //         'g.com': {
+    //             x: -0.5,
+    //             y:
+    //                 0.3,
+    //             score:
+    //                 2
+    //         },
+    //         'ya.com': {
+    //             x: -0.54,
+    //             y:
+    //                 0.13,
+    //             score:
+    //                 5
+    //         }
+    //     }
+    // }
+
+    function loadMainData() {
+        return fetch('http://' + IP + '/api/data', {method: 'get'})
+    }
+
+    function loadWebsiteData(url) {
+        fetch('http://' + IP + '/api/website?hostname=' + encodeURI(url), {method: 'get'})
+            .then(response => {
+                addSite(response.json())
+                preRender()
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }
+</script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="./d3.v4.min.js"></script>
 <script>
-    var randomX = d3.randomUniform(0, 10),
-        randomY = d3.randomNormal(0.5, 0.12),
-        data = d3.range(100).map(function () {
-            return [randomX(), randomY()]
+    let resultResponse
+    loadMainData().then(response => {
+        resultResponse = response.json().websites
+    })
+        .catch(error => {
+            console.log(error)
         })
-    console.log(data, typeof (data))
+
 
     function check() {
         let url = document.getElementById('checkInput').value
-        console.log(url)
-        addSite()
-        preRender()
+        loadWebsiteData(url)
     }
 
-    function addSite() {
-        data.push([randomX(), randomY()])
+    function addSite(site) {
+        data.push([site.x, site.y])
     }
 
     function preRender() {
