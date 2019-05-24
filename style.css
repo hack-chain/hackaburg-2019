@@ -88,7 +88,17 @@ h1, h2 {
 .siteDescription {
 }
 
+.axisWhite line{
+    stroke: white;
+}
 
+.axisWhite path{
+    stroke: white;
+}
+
+.axisWhite text{
+    fill: white;
+}
 
 .container {
     background-color: #181818;

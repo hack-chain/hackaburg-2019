@@ -27,6 +27,8 @@
         </div>
     </div>
     <div class="chart">
+        <h1 style="position: absolute;" id="chartText">
+        </h1>
         <svg width="960" height="300"></svg>
     </div>
 </div>
@@ -71,75 +73,79 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="./d3.v4.min.js"></script>
 <script>
-    let resultResponse
-    loadMainData().then(response => {
-        resultResponse = response.json().websites
-    })
-        .catch(error => {
-            console.log(error)
-        })
+    //let resultResponse
+    //loadMainData().then(response => {
+    //    resultResponse = response.json().websites
+    //})
+    //    .catch(error => {
+    //        console.log(error)
+    //    })
+    //
+    //
+    //function check() {
+    //    let url = document.getElementById('checkInput').value
+    //    loadWebsiteData(url)
+    //}
+    //
+    //function addSite(site) {
+    //    data.push([site.x, site.y])
+    //}
+    let json = {"10086.cn": -0.0, "accuweather.com": -16.3, "adobe.com": -2.2, "aliexpress.com": -1.8, "amazon.co.jp": -3.4000000000000004, "amazon.com": -4.3, "amazon.co.uk": -3.2, "amazon.de": -3.2, "amazon.in": -3.2, "ampproject.org": -0.0, "apple.com": -0.0, "baidu.com": -0.0, "bbc.com": -4.2, "bbc.co.uk": -3.7, "bilibili.com": -10.0, "bing.com": -0.0, "bit.ly": -1.8, "booking.com": -0.9, "chaturbate.com": -11.6, "cnn.com": -18.7, "craigslist.org": -0.0, "cricbuzz.com": -1.3, "discordapp.com": -1.0, "docomo.ne.jp": -0.30000000000000004, "duckduckgo.com": -0.0, "ebay.com": -7.4, "espn.com": -3.0, "facebook.com": -0.0, "fandom.com": -7.4, "fc2.com": -1.3, "foxnews.com": -11.9, "github.com": -1.0, "globo.com": -2.9000000000000004, "google.co.in": -0.0, "google.co.jp": -0.0, "google.com.br": -0.0, "google.com": -0.0, "google.com.tr": -0.0, "google.co.uk": -0.0, "google.de": -0.1, "google.es": -0.1, "google.fr": -0.0, "google.it": -0.1, "google.pl": -0.2, "google.ru": -0.0, "imdb.com": -4.5, "imgur.com": -5.1, "indeed.com": -1.4, "instagram.com": -0.0, "linkedin.com": -1.0, "live.com": -0.2, "livejasmin.com": -12.0, "mail.ru": -17.6, "microsoft.com": -5.6000000000000005, "msn.com": -7.9, "naver.com": -0.0, "netflix.com": -0.30000000000000004, "news.google.com": -1.0, "news.yahoo.co.jp": -0.5, "news.yandex.ru": -0.0, "office.com": -0.5, "ok.ru": -7.7, "outbrain.com": -3.6, "paypal.com": -1.8, "pinterest.com": -0.0, "pornhub.com": -0.4, "quora.com": -1.2, "rakuten.co.jp": -0.0, "reddit.com": -0.0, "redtube.com": -0.5, "samsung.com": -4.3, "sm.cn": -0.5, "sogou.com": -0.0, "sohu.com": -0.0, "stackoverflow.com": -1.3, "taboola.com": -7.5, "taobao.com": -1.6, "toutiao.com": -10.2, "tribunnews.com": -0.0, "tumblr.com": -2.3, "twitch.tv": -3.4000000000000004, "twitter.com": -0.0, "uol.com.br": -6.1000000000000005, "vk.com": -10.2, "whatsapp.com": -0.0, "wikipedia.org": -0.0, "wordpress.com": -1.8, "xhamster.com": -0.2, "xnxx.com": -0.0, "xvideos.com": -0.0, "yahoo.co.jp": -0.6000000000000001, "yahoo.com": -0.8, "yandex.ru": -0.1, "youporn.com": -0.2, "youtu.be": -0.4, "youtube.com": -0.1};
 
-
-    function check() {
-        let url = document.getElementById('checkInput').value
-        loadWebsiteData(url)
+    const X = [];
+    for (let key in json) {
+        if (json.hasOwnProperty(key)) {
+            X.push([json[key], key]);
+        }
     }
 
-    function addSite(site) {
-        data.push([site.x, site.y])
+    let yValue = 0.5;
+    let length = 96;
+    let data = [];
+    for (let i = 0; i < length; i++) {
+        data.push([-1*X[i][0], yValue*Math.random(), X[i][1]])
     }
 
     function preRender() {
-        // Source: https://bl.ocks.org/mbostock/87746f16b83cb9d5371394a001cbd772
 
-        const svg = d3.select("svg"),
-            margin = {top: 50, right: 50, bottom: 100, left: 50},
-            width = +svg.attr("width") - margin.left - margin.right,
-            height = +svg.attr("height") - margin.top - margin.bottom,
-            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        const svg = d3.select("svg");
+        const margin = {top: 0, right: 10, bottom: 150, left: 10};
+        const width = +svg.attr("width") - margin.left - margin.right;
+        const height = +svg.attr("height") - margin.top - margin.bottom;
+
+        const g = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");2
 
         const x = d3.scaleLinear()
-            .domain([0, 10])
+            .domain([0, 20])
             .range([0, width]);
 
         const y = d3.scaleLinear()
             .range([height, 0]);
 
-        const brush = d3.brushX()
-            .extent([[0, 0], [width, height]])
-            .on("start brush", brushed);
-
         const dot = g.append("g")
-            .attr("fill-opacity", 0.2)
+            .attr("fill-opacity", 0.5)
+            .style("fill", "red")
             .selectAll("circle")
             .data(data)
             .enter().append("circle")
             .attr("transform", function (d) {
                 return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
             })
-            .attr("r", 3.5);
+            .attr("r", 3.5)
+            .on("mouseleave", function(d) {
+                document.getElementById("chartText").innerHTML = "";
+                d3.select(this).attr("r", 3.5).style("fill", "red");
+            })
+            .on("mouseover", function(d) {
+                document.getElementById("chartText").innerHTML = d[2];
+                d3.select(this).attr("r", 10).style("fill", "red");
+            });
 
         g.append("g")
-            .call(brush)
-            .call(brush.move, [3, 5].map(x))
-            .selectAll(".overlay")
-            .on("mousedown touchstart", beforebrushed, true);
-
-        g.append("g")
+            .attr("class", "axisWhite")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
-
-        function beforebrushed() {
-            d3.event.stopImmediatePropagation();
-            d3.select(this.parentNode).transition().call(brush.move, x.range())
-        }
-
-        function brushed() {
-            const extent = d3.event.selection.map(x.invert, x);
-            dot.classed("selected", function (d) {
-                return extent[0] <= d[0] && d[0] <= extent[1]
-            })
-        }
     }
 
     preRender()
