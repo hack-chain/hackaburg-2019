@@ -9,7 +9,7 @@ body {
 .header {
     height: 60px;
     background-color: #181818;
-    border-bottom: rgba(255,255,255,0.05) solid 1px;
+    border-bottom: rgba(255, 255, 255, 0.05) solid 1px;
 }
 
 .logo b {
@@ -43,7 +43,7 @@ body {
     border: 1px solid #464646;
     border-radius: 3px 0 0 3px;
     outline: none;
-    color: rgba(255,255,255,1);
+    color: rgba(255, 255, 255, 1);
 }
 
 .search button {
@@ -57,7 +57,7 @@ body {
     border: 1px solid #464646;
     border-left: none;
     border-radius: 0 3px 3px 0;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
     outline: none;
     cursor: pointer;
 }
@@ -71,7 +71,7 @@ body {
 }
 
 .description {
-    border-bottom: rgba(255,255,255,0.05) solid 1px;
+    border-bottom: rgba(255, 255, 255, 0.05) solid 1px;
     padding: 20px 0 20px 0;
     margin: 0 30px 0 30px;
     text-align: center;
@@ -88,16 +88,16 @@ h1, h2 {
 .siteDescription {
 }
 
-.axisWhite line{
-    stroke: white;
+.axisWhite line {
+    stroke: #f4f4f4;
 }
 
-.axisWhite path{
-    stroke: white;
+.axisWhite path {
+    stroke: #f4f4f4;
 }
 
-.axisWhite text{
-    fill: white;
+.axisWhite text {
+    fill: #f4f4f4;
 }
 
 .container {
@@ -119,10 +119,31 @@ h1, h2 {
     padding: 0;
 }
 
-.chart svg {
+.selected {
+    fill: red;
+    stroke: brown;
 }
 
-.selected {
-  fill: red;
-  stroke: brown;
+#chartText {
+    position: relative;
+    font-size: 30px;
+    color: #f4f4f4;
+    margin-left: 10px;
+    top: -5px;
+}
+
+#chartImg {
+    height: 30px;
+    opacity: 0;
+}
+
+#chartFloatWindow {
+    height: 40px;
+    position: relative;
+    top: 20px;
+}
+
+#chartSvg {
+    position: relative;
+    top: -40px;
 }
