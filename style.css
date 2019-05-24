@@ -98,6 +98,7 @@ h1, h2 {
 
 .axisWhite text{
     fill: white;
+    font-size: 14px;
 }
 
 .container {
