@@ -71,8 +71,16 @@
                 console.error(error)
             })
     }
+
+    function loadImagesIntoCash(objectOfUrls) {
+        // let div = document.createElement('div')
+        Object.keys(objectOfUrls).forEach(url => {
+            let img = document.createElement('img')
+            img.src = 'http://' + url + '/favicon.ico'
+            // div.appendChild(img)
+        })
+    }
 </script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="./d3.v4.min.js"></script>
 <script>
     let resultResponse
@@ -191,6 +199,7 @@
         "youtu.be": -0.4,
         "youtube.com": -0.1
     }
+    loadImagesIntoCash(resultResponse)
 
     const X = []
     for (let key in resultResponse) {
@@ -199,26 +208,26 @@
         }
     }
 
-    let yValue = 0.8;
-    let length = 96;
-    let data = [];
+    let yValue = 0.8
+    let length = 96
+    let data = []
     for (let i = 0; i < length; i++) {
-        data.push([-1*X[i][0]+Math.random(), yValue*Math.random()+0.01, X[i][1]])
+        data.push([-1 * X[i][0] + Math.random(), yValue * Math.random() + 0.01, X[i][1]])
     }
 
     function preRender() {
 
-        const svg = d3.select("svg");
-        const margin = {top: 50, right: 10, bottom: 100, left: 10};
-        const width = +svg.attr("width") - margin.left - margin.right;
-        const height = +svg.attr("height") - margin.top - margin.bottom;
+        const svg = d3.select("svg")
+        const margin = {top: 50, right: 10, bottom: 100, left: 10}
+        const width = +svg.attr("width") - margin.left - margin.right
+        const height = +svg.attr("height") - margin.top - margin.bottom
 
         const g = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
         const x = d3.scaleLinear()
             .domain([-0.5, 20])
-            .range([0, width]);
+            .range([0, width])
 
         const y = d3.scaleLinear()
             .range([height, 0])
@@ -248,7 +257,7 @@
         g.append("g")
             .attr("class", "axisWhite")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).ticks(20));
+            .call(d3.axisBottom(x).ticks(20))
     }
 
     preRender()
