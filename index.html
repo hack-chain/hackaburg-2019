@@ -240,7 +240,7 @@
                 d3.select(this).attr("r", 3.5).style("fill", "red")
             })
             .on("mouseover", function (d) {
-                document.getElementById("chartText").innerHTML = d[2]
+                document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100
                 document.getElementById("chartImg").style.opacity = "1"
                 document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico'
                 d3.select(this).attr("r", 10).style("fill", "red")
