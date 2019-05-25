@@ -27,16 +27,15 @@
         </div>
     </div>
     <div class="chart">
-        <h1 style="position: absolute;" id="chartText">
-        </h1>
-        <svg width="960" height="300" id="svg1">></svg>
-    </div>
-    <div class="chart">
-        <svg width="960" height="500" id="svg2"></svg>
+        <div id="chartFloatWindow">
+            <img src="" id="chartImg">
+            <span id="chartText"></span>
+        </div>
+        <svg width="960" height="300" id="chartSvg"></svg>
     </div>
 </div>
 <script>
-    const IP = '34.65.75.228';
+    const IP = '34.65.75.228'
 
     // Example:
     // let response1 = {
@@ -65,47 +64,173 @@
     function loadWebsiteData(url) {
         fetch('http://' + IP + '/api/website?hostname=' + encodeURI(url), {method: 'get'})
             .then(response => {
-                addSite(response.json());
+                addSite(response.json())
                 preRender()
             })
             .catch(error => {
                 console.error(error)
             })
     }
+
+    function loadImagesIntoCash(objectOfUrls) {
+        // let div = document.createElement('div')
+        Object.keys(objectOfUrls).forEach(url => {
+            let img = document.createElement('img')
+            img.src = 'http://' + url + '/favicon.ico'
+            // div.appendChild(img)
+        })
+    }
 </script>
 <script src="./d3.v4.min.js"></script>
 <script>
-    function renderFirst() {
-        let json = {"10086.cn": -0.0, "accuweather.com": -16.3, "adobe.com": -2.2, "aliexpress.com": -1.8, "amazon.co.jp": -3.4000000000000004, "amazon.com": -4.3, "amazon.co.uk": -3.2, "amazon.de": -3.2, "amazon.in": -3.2, "ampproject.org": -0.0, "apple.com": -0.0, "baidu.com": -0.0, "bbc.com": -4.2, "bbc.co.uk": -3.7, "bilibili.com": -10.0, "bing.com": -0.0, "bit.ly": -1.8, "booking.com": -0.9, "chaturbate.com": -11.6, "cnn.com": -18.7, "craigslist.org": -0.0, "cricbuzz.com": -1.3, "discordapp.com": -1.0, "docomo.ne.jp": -0.30000000000000004, "duckduckgo.com": -0.0, "ebay.com": -7.4, "espn.com": -3.0, "facebook.com": -0.0, "fandom.com": -7.4, "fc2.com": -1.3, "foxnews.com": -11.9, "github.com": -1.0, "globo.com": -2.9000000000000004, "google.co.in": -0.0, "google.co.jp": -0.0, "google.com.br": -0.0, "google.com": -0.0, "google.com.tr": -0.0, "google.co.uk": -0.0, "google.de": -0.1, "google.es": -0.1, "google.fr": -0.0, "google.it": -0.1, "google.pl": -0.2, "google.ru": -0.0, "imdb.com": -4.5, "imgur.com": -5.1, "indeed.com": -1.4, "instagram.com": -0.0, "linkedin.com": -1.0, "live.com": -0.2, "livejasmin.com": -12.0, "mail.ru": -17.6, "microsoft.com": -5.6000000000000005, "msn.com": -7.9, "naver.com": -0.0, "netflix.com": -0.30000000000000004, "news.google.com": -1.0, "news.yahoo.co.jp": -0.5, "news.yandex.ru": -0.0, "office.com": -0.5, "ok.ru": -7.7, "outbrain.com": -3.6, "paypal.com": -1.8, "pinterest.com": -0.0, "pornhub.com": -0.4, "quora.com": -1.2, "rakuten.co.jp": -0.0, "reddit.com": -0.0, "redtube.com": -0.5, "samsung.com": -4.3, "sm.cn": -0.5, "sogou.com": -0.0, "sohu.com": -0.0, "stackoverflow.com": -1.3, "taboola.com": -7.5, "taobao.com": -1.6, "toutiao.com": -10.2, "tribunnews.com": -0.0, "tumblr.com": -2.3, "twitch.tv": -3.4000000000000004, "twitter.com": -0.0, "uol.com.br": -6.1000000000000005, "vk.com": -10.2, "whatsapp.com": -0.0, "wikipedia.org": -0.0, "wordpress.com": -1.8, "xhamster.com": -0.2, "xnxx.com": -0.0, "xvideos.com": -0.0, "yahoo.co.jp": -0.6000000000000001, "yahoo.com": -0.8, "yandex.ru": -0.1, "youporn.com": -0.2, "youtu.be": -0.4, "youtube.com": -0.1};
+    let resultResponse
+    loadMainData().then(response => {
+        resultResponse = response.json().websites
+    })
+        .catch(error => {
+            console.log(error)
+        })
 
-        const X = [];
-        for (let key in json) {
-            if (json.hasOwnProperty(key)) {
-                X.push([json[key], key]);
-            }
+
+    function check() {
+        let url = document.getElementById('checkInput').value
+        loadWebsiteData(url)
+    }
+
+    function addSite(site) {
+        data.push([site.x, site.y])
+    }
+
+    resultResponse = {
+        "10086.cn": -0.0,
+        "accuweather.com": -16.3,
+        "adobe.com": -2.2,
+        "aliexpress.com": -1.8,
+        "amazon.co.jp": -3.4000000000000004,
+        "amazon.com": -4.3,
+        "amazon.co.uk": -3.2,
+        "amazon.de": -3.2,
+        "amazon.in": -3.2,
+        "ampproject.org": -0.0,
+        "apple.com": -0.0,
+        "baidu.com": -0.0,
+        "bbc.com": -4.2,
+        "bbc.co.uk": -3.7,
+        "bilibili.com": -10.0,
+        "bing.com": -0.0,
+        "bit.ly": -1.8,
+        "booking.com": -0.9,
+        "chaturbate.com": -11.6,
+        "cnn.com": -18.7,
+        "craigslist.org": -0.0,
+        "cricbuzz.com": -1.3,
+        "discordapp.com": -1.0,
+        "docomo.ne.jp": -0.30000000000000004,
+        "duckduckgo.com": -0.0,
+        "ebay.com": -7.4,
+        "espn.com": -3.0,
+        "facebook.com": -0.0,
+        "fandom.com": -7.4,
+        "fc2.com": -1.3,
+        "foxnews.com": -11.9,
+        "github.com": -1.0,
+        "globo.com": -2.9000000000000004,
+        "google.co.in": -0.0,
+        "google.co.jp": -0.0,
+        "google.com.br": -0.0,
+        "google.com": -0.0,
+        "google.com.tr": -0.0,
+        "google.co.uk": -0.0,
+        "google.de": -0.1,
+        "google.es": -0.1,
+        "google.fr": -0.0,
+        "google.it": -0.1,
+        "google.pl": -0.2,
+        "google.ru": -0.0,
+        "imdb.com": -4.5,
+        "imgur.com": -5.1,
+        "indeed.com": -1.4,
+        "instagram.com": -0.0,
+        "linkedin.com": -1.0,
+        "live.com": -0.2,
+        "livejasmin.com": -12.0,
+        "mail.ru": -17.6,
+        "microsoft.com": -5.6000000000000005,
+        "msn.com": -7.9,
+        "naver.com": -0.0,
+        "netflix.com": -0.30000000000000004,
+        "news.google.com": -1.0,
+        "news.yahoo.co.jp": -0.5,
+        "news.yandex.ru": -0.0,
+        "office.com": -0.5,
+        "ok.ru": -7.7,
+        "outbrain.com": -3.6,
+        "paypal.com": -1.8,
+        "pinterest.com": -0.0,
+        "pornhub.com": -0.4,
+        "quora.com": -1.2,
+        "rakuten.co.jp": -0.0,
+        "reddit.com": -0.0,
+        "redtube.com": -0.5,
+        "samsung.com": -4.3,
+        "sm.cn": -0.5,
+        "sogou.com": -0.0,
+        "sohu.com": -0.0,
+        "stackoverflow.com": -1.3,
+        "taboola.com": -7.5,
+        "taobao.com": -1.6,
+        "toutiao.com": -10.2,
+        "tribunnews.com": -0.0,
+        "tumblr.com": -2.3,
+        "twitch.tv": -3.4000000000000004,
+        "twitter.com": -0.0,
+        "uol.com.br": -6.1000000000000005,
+        "vk.com": -10.2,
+        "whatsapp.com": -0.0,
+        "wikipedia.org": -0.0,
+        "wordpress.com": -1.8,
+        "xhamster.com": -0.2,
+        "xnxx.com": -0.0,
+        "xvideos.com": -0.0,
+        "yahoo.co.jp": -0.6000000000000001,
+        "yahoo.com": -0.8,
+        "yandex.ru": -0.1,
+        "youporn.com": -0.2,
+        "youtu.be": -0.4,
+        "youtube.com": -0.1
+    }
+    loadImagesIntoCash(resultResponse)
+
+    const X = []
+    for (let key in resultResponse) {
+        if (resultResponse.hasOwnProperty(key)) {
+            X.push([resultResponse[key], key])
         }
+    }
 
-        let yValue = 0.8;
-        let length = 96;
-        let data = [];
-        for (let i = 0; i < length; i++) {
-            data.push([-1*X[i][0]+Math.random(), yValue*Math.random()+0.01, X[i][1]])
-        }
+    let yValue = 0.8
+    let length = 96
+    let data = []
+    for (let i = 0; i < length; i++) {
+        data.push([-1 * X[i][0] + Math.random(), yValue * Math.random() + 0.01, X[i][1]])
+    }
 
-        const svg = d3.select("#svg1");
-        const margin = {top: 50, right: 10, bottom: 100, left: 10};
-        const width = +svg.attr("width") - margin.left - margin.right;
-        const height = +svg.attr("height") - margin.top - margin.bottom;
+    function preRender() {
+
+        const svg = d3.select("svg")
+        const margin = {top: 50, right: 10, bottom: 100, left: 10}
+        const width = +svg.attr("width") - margin.left - margin.right
+        const height = +svg.attr("height") - margin.top - margin.bottom
 
         const g = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
         const x = d3.scaleLinear()
             .domain([-0.5, 20])
-            .range([0, width]);
+            .range([0, width])
 
         const y = d3.scaleLinear()
-            .range([height, 0]);
+            .range([height, 0])
 
         const dot = g.append("g")
             .attr("fill-opacity", 0.5)
@@ -117,75 +242,25 @@
                 return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
             })
             .attr("r", 5)
-            .on("mouseleave", function(d) {
-                document.getElementById("chartText").innerHTML = "";
-                d3.select(this).attr("r", 5).style("fill", "red");
+            .on("mouseleave", function (d) {
+                document.getElementById("chartText").innerHTML = ""
+                document.getElementById("chartImg").style.opacity = "0"
+                d3.select(this).attr("r", 5).style("fill", "red")
             })
-            .on("mouseover", function(d) {
-                document.getElementById("chartText").innerHTML = d[2];
-                d3.select(this).attr("r", 10).style("fill", "red");
-            });
+            .on("mouseover", function (d) {
+                document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100
+                document.getElementById("chartImg").style.opacity = "1"
+                document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico'
+                d3.select(this).attr("r", 10).style("fill", "red")
+            })
 
         g.append("g")
             .attr("class", "axisWhite")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).ticks(20));
+            .call(d3.axisBottom(x).ticks(20))
     }
 
-    function renderSecond() {
-        let json = {"10086.cn":{"score":-0.0,"x":0.9671949744224548,"y":-3.8533120155334473},"accuweather.com":{"score":-16.3,"x":-12.196333885192871,"y":-6.030558109283447},"adobe.com":{"score":-2.2,"x":-9.337141990661621,"y":-6.330875396728516},"aliexpress.com":{"score":-0.8,"x":-8.805749893188477,"y":-3.6571109294891357},"amazon.co.jp":{"score":-3.4000000000000004,"x":-12.891576766967773,"y":-7.887016773223877},"amazon.co.uk":{"score":-3.2,"x":-13.61431884765625,"y":-7.4428300857543945},"amazon.com":{"score":-4.3,"x":-13.368244171142578,"y":-7.762866497039795},"amazon.de":{"score":-3.2,"x":-13.627541542053223,"y":-7.403838157653809},"amazon.in":{"score":-3.2,"x":-13.502138137817383,"y":-7.608701705932617},"ampproject.org":{"score":-0.0,"x":-2.6531929969787598,"y":-6.101598262786865},"apple.com":{"score":-0.0,"x":-0.35938525199890137,"y":-5.13784646987915},"baidu.com":{"score":-0.0,"x":-2.831343412399292,"y":-4.664705276489258},"bbc.co.uk":{"score":-3.7,"x":-10.2250337600708,"y":-6.641842842102051},"bbc.com":{"score":-4.2,"x":-10.576831817626953,"y":-6.804778575897217},"bilibili.com":{"score":-10.0,"x":-8.780734062194824,"y":-3.687868356704712},"bing.com":{"score":-0.0,"x":-0.22701768577098846,"y":-5.15578556060791},"bit.ly":{"score":-0.8,"x":-9.11939525604248,"y":-6.287811279296875},"booking.com":{"score":-0.9,"x":-10.374760627746582,"y":-5.00640869140625},"chaturbate.com":{"score":-10.6,"x":-10.165876388549805,"y":-4.61668062210083},"cnn.com":{"score":-18.7,"x":-13.058501243591309,"y":-6.129308700561523},"craigslist.org":{"score":-0.0,"x":1.219607949256897,"y":-5.107441425323486},"cricbuzz.com":{"score":-0.30000000000000004,"x":-6.854438304901123,"y":-6.075608730316162},"discordapp.com":{"score":-0.0,"x":-2.2748141288757324,"y":-5.658970355987549},"docomo.ne.jp":{"score":-0.30000000000000004,"x":-3.379356861114502,"y":-4.62677001953125},"duckduckgo.com":{"score":-0.0,"x":1.3984510898590088,"y":-4.104491233825684},"ebay.com":{"score":-7.4,"x":-12.1451997756958,"y":-5.946391582489014},"espn.com":{"score":-3.0,"x":-12.089710235595703,"y":-6.0122971534729},"facebook.com":{"score":-0.0,"x":-5.14272928237915,"y":-6.573973178863525},"fandom.com":{"score":-4.4,"x":-12.240458488464355,"y":-7.89063024520874},"fc2.com":{"score":-0.30000000000000004,"x":-5.455074310302734,"y":-4.7238640785217285},"foxnews.com":{"score":-9.9,"x":-13.54796314239502,"y":-7.497177600860596},"github.com":{"score":-0.0,"x":-6.769472122192383,"y":-6.161564350128174},"globo.com":{"score":-1.9000000000000001,"x":-9.900737762451172,"y":-6.460839748382568},"google.co.in":{"score":-0.0,"x":-1.7214008569717407,"y":-4.295390605926514},"google.co.jp":{"score":-0.0,"x":-1.7214008569717407,"y":-4.295390605926514},"google.co.uk":{"score":-0.0,"x":-1.7214008569717407,"y":-4.295390605926514},"google.com":{"score":-0.0,"x":-1.0335241556167603,"y":-3.9745781421661377},"google.com.br":{"score":-0.0,"x":-1.7214008569717407,"y":-4.295390605926514},"google.com.tr":{"score":-0.0,"x":-2.1936235427856445,"y":-4.530328750610352},"google.de":{"score":-0.1,"x":-2.822089672088623,"y":-4.985744476318359},"google.es":{"score":-0.1,"x":-2.822089672088623,"y":-4.985744476318359},"google.fr":{"score":-0.0,"x":-1.7214008569717407,"y":-4.295390605926514},"google.it":{"score":-0.1,"x":-2.822089672088623,"y":-4.985744476318359},"google.pl":{"score":-0.2,"x":-2.4577267169952393,"y":-5.819155216217041},"google.ru":{"score":-0.0,"x":-1.7214008569717407,"y":-4.295390605926514},"imdb.com":{"score":-4.5,"x":-10.814810752868652,"y":-6.929836750030518},"imgur.com":{"score":-3.1,"x":-7.422128200531006,"y":-4.243967056274414},"indeed.com":{"score":-0.4,"x":-4.7805304527282715,"y":-4.921016216278076},"instagram.com":{"score":-0.0,"x":-1.1146544218063354,"y":-3.905925750732422},"linkedin.com":{"score":-1.0,"x":-6.9101762771606445,"y":-5.806254863739014},"live.com":{"score":-0.2,"x":-4.755126953125,"y":-6.477395534515381},"livejasmin.com":{"score":-10.0,"x":-7.231190204620361,"y":-4.20483922958374},"mail.ru":{"score":-17.6,"x":-12.856282234191895,"y":-6.197724342346191},"microsoft.com":{"score":-5.6000000000000005,"x":-9.673731803894043,"y":-6.41857385635376},"msn.com":{"score":-7.9,"x":-11.716472625732422,"y":-7.5615668296813965},"naver.com":{"score":-0.0,"x":-8.644968032836914,"y":-3.7379541397094727},"netflix.com":{"score":-0.30000000000000004,"x":-4.762508392333984,"y":-4.901469707489014},"news.google.com":{"score":-0.0,"x":-8.488666534423828,"y":-3.870048761367798},"news.yahoo.co.jp":{"score":-0.5,"x":-9.84022045135498,"y":-5.520493030548096},"news.yandex.ru":{"score":-0.0,"x":-5.890385627746582,"y":-6.372958183288574},"office.com":{"score":-0.5,"x":-6.086226940155029,"y":-6.4079084396362305},"ok.ru":{"score":-7.7,"x":-11.446352005004883,"y":-7.239843845367432},"outbrain.com":{"score":-1.6,"x":-7.223358154296875,"y":-6.0437211990356445},"paypal.com":{"score":-0.8,"x":-6.923638343811035,"y":-6.029539108276367},"pinterest.com":{"score":-0.0,"x":-9.046133995056152,"y":-3.618436336517334},"pornhub.com":{"score":-0.4,"x":-10.23076343536377,"y":-5.235367298126221},"quora.com":{"score":-0.2,"x":-5.880207538604736,"y":-6.4155049324035645},"rakuten.co.jp":{"score":-0.0,"x":1.3984510898590088,"y":-4.104491233825684},"reddit.com":{"score":-0.0,"x":0.762085497379303,"y":-5.263425827026367},"redtube.com":{"score":-0.5,"x":-9.686673164367676,"y":-3.7719762325286865},"samsung.com":{"score":-4.3,"x":-10.697580337524414,"y":-5.392022132873535},"sm.cn":{"score":-0.5,"x":-3.0267174243927,"y":-4.626561164855957},"sogou.com":{"score":-0.0,"x":-0.23478059470653534,"y":-5.2314982414245605},"sohu.com":{"score":-0.0,"x":-5.900716781616211,"y":-6.382904052734375},"stackoverflow.com":{"score":-0.30000000000000004,"x":-4.984923362731934,"y":-4.896018028259277},"taboola.com":{"score":-1.5,"x":-8.342144966125488,"y":-6.173280239105225},"taobao.com":{"score":-1.6,"x":-9.33621883392334,"y":-3.6167871952056885},"toutiao.com":{"score":-10.2,"x":-6.576283931732178,"y":-4.4559736251831055},"tribunnews.com":{"score":-0.0,"x":1.2940480709075928,"y":-3.970226287841797},"tumblr.com":{"score":-0.30000000000000004,"x":-8.868636131286621,"y":-5.564857006072998},"twitch.tv":{"score":-3.4000000000000004,"x":-10.270373344421387,"y":-6.662757396697998},"twitter.com":{"score":-0.0,"x":-2.8654849529266357,"y":-4.691361427307129},"uol.com.br":{"score":-5.1000000000000005,"x":-12.638659477233887,"y":-7.933838367462158},"vk.com":{"score":-10.2,"x":-2.914126396179199,"y":-4.7844977378845215},"whatsapp.com":{"score":-0.0,"x":-5.105993270874023,"y":-6.58255672454834},"wikipedia.org":{"score":-0.0,"x":0.623335063457489,"y":-5.250102996826172},"wordpress.com":{"score":-1.8,"x":-8.968986511230469,"y":-6.184288501739502},"xhamster.com":{"score":-0.2,"x":-8.62469482421875,"y":-3.8052890300750732},"xnxx.com":{"score":-0.0,"x":-7.627854347229004,"y":-4.114478588104248},"xvideos.com":{"score":-0.0,"x":-7.61589241027832,"y":-4.121088981628418},"yahoo.co.jp":{"score":-0.6000000000000001,"x":-7.102377891540527,"y":-5.963612079620361},"yahoo.com":{"score":-0.8,"x":-11.343940734863281,"y":-7.129404067993164},"yandex.ru":{"score":-0.1,"x":-9.586592674255371,"y":-3.694920778274536},"youporn.com":{"score":-0.2,"x":-9.390918731689453,"y":-3.6284470558166504},"youtu.be":{"score":-0.4,"x":-8.423943519592285,"y":-3.947214126586914},"youtube.com":{"score":-0.1,"x":-6.328468322753906,"y":-6.294300556182861}}
-
-        let data = [];
-        for (let key in json) {
-            if (json.hasOwnProperty(key)) {
-                data.push([json[key]["x"], json[key]["y"], key]);
-            }
-        }
-
-        const svg = d3.select("#svg2");
-        const margin = {top: 50, right: 10, bottom: 100, left: 10};
-        const width = +svg.attr("width") - margin.left - margin.right;
-        const height = +svg.attr("height") - margin.top - margin.bottom;
-
-        const g = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        const x = d3.scaleLinear()
-            .domain([-20, 3])
-            .range([0, width]);
-
-        const y = d3.scaleLinear()
-            .domain([-10, 10])
-            .range([height, 10]);
-
-        const dot = g.append("g")
-            .attr("fill-opacity", 0.5)
-            .style("fill", "red")
-            .selectAll("circle")
-            .data(data)
-            .enter().append("circle")
-            .attr("transform", function (d) {
-                return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
-            })
-            .attr("r", 5)
-            .on("mouseleave", function(d) {
-                document.getElementById("chartText").innerHTML = "";
-                d3.select(this).attr("r", 5).style("fill", "red");
-            })
-            .on("mouseover", function(d) {
-                document.getElementById("chartText").innerHTML = d[2];
-                d3.select(this).attr("r", 10).style("fill", "red");
-            });
-
-        g.append("g")
-            .attr("class", "axisWhite")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).ticks(20));
-
-    }
-
-    renderFirst();
-    renderSecond()
+    preRender()
 </script>
 
 </body>
