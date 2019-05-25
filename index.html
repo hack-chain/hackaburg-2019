@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Staty</title>
+    <title>Privacy Benchmark</title>
     <meta name="description" content="Check sites for data privacy and security">
     <meta name="author" content="Kolmogorov's gang">
     <link rel="stylesheet" href="style.css">
@@ -23,7 +23,7 @@
         </span>
         <div class="search">
             <input type="text" placeholder="URL, e.g. google.com" id="checkInput">
-            <button onclick="check()">Check!</button>
+            <button onclick="check()" id="checkBtn">Check!</button>
             <div id="loader" class="loader"></div>
         </div>
     </div>
@@ -117,38 +117,61 @@
         const width = +svg.attr("width") - margin.left - margin.right;
         const height = +svg.attr("height") - margin.top - margin.bottom;
 
+/*        const svg = d3.select("#chartSvg")
+        const margin = {top: 50, right: 10, bottom: 100, left: 10}
+        const width = +svg.attr("width") - margin.left - margin.right
+        const height = +svg.attr("height") - margin.top - margin.bottom*/
+
         const g = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
         const x = d3.scaleLinear()
             .domain([-0.5, 20])
-            .range([0, width]);
+            .range([0, width])
 
         const y = d3.scaleLinear()
             .range([height, 0]);
 
+        svg.append("text")
+            .attr("transform",
+                "translate(" + 25 + " ," +
+                (height + margin.top + 50) + ")")
+            .style("text-anchor", "middle")
+            .style('fill', '#ff0000')
+            .style('font-weight', 'bold')
+            .text("Worst");
+        svg.append("text")
+            .attr("transform",
+                "translate(" + width + " ," +
+                (height + margin.top + 50) + ")")
+            .style("text-anchor", "middle")
+            .style('fill', '#5DCD32')
+            .style('font-weight', 'bold')
+            .text("Best");
+
         if (!add) {
             const dot = g.append("g")
                 .attr("fill-opacity", 0.5)
-                .style("fill", 'red')
+                //.style('fill', 'url(#svgGradient)')
                 .selectAll("circle")
                 .data(firstData)
                 .enter().append("circle")
+                .style('fill', 'red')
                 .attr("transform", function (d) {
                     return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
                 })
                 .attr("r", 5)
                 .on("mouseleave", function (d) {
-                    document.getElementById("chartText").innerHTML = "";
-                    document.getElementById("chartImg").style.opacity = "0";
-                    d3.select(this).attr("r", 5).style("fill", 'red')
+                    document.getElementById("chartText").innerHTML = ""
+                    document.getElementById("chartImg").style.opacity = "0"
+                    d3.select(this).attr("r", 5)
                 })
                 .on("mouseover", function (d) {
-                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100;
-                    document.getElementById("chartImg").style.opacity = "1";
-                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
-                    d3.select(this).attr("r", 10).style("fill", 'red')
-                });
+                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100
+                    document.getElementById("chartImg").style.opacity = "1"
+                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico'
+                    d3.select(this).attr("r", 10)
+                })
 
             g.append("g")
                 .attr("class", "axisWhite")
@@ -166,14 +189,14 @@
                 })
                 .attr("r", 5)
                 .on("mouseleave", function (d) {
-                    document.getElementById("chartText").innerHTML = "";
-                    document.getElementById("chartImg").style.opacity = "0";
+                    document.getElementById("chartText").innerHTML = ""
+                    document.getElementById("chartImg").style.opacity = "0"
                     d3.select(this).attr("r", 5).style("fill", 'white')
                 })
                 .on("mouseover", function (d) {
-                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100;
-                    document.getElementById("chartImg").style.opacity = "1";
-                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
+                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100
+                    document.getElementById("chartImg").style.opacity = "1"
+                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico'
                     d3.select(this).attr("r", 10).style("fill", 'white')
                 })
         }
@@ -242,6 +265,16 @@
                 })
         }
     }
+
+    // Send by click enter
+    let input = document.getElementById("checkInput");
+    input.addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("checkBtn").click()
+        }
+    })
+
 </script>
 
 </body>
