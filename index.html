@@ -24,6 +24,7 @@
         <div class="search">
             <input type="text" placeholder="URL, e.g. google.com" id="checkInput">
             <button onclick="check()">Check!</button>
+            <div id="loader" class="loader"></div>
         </div>
     </div>
     <div class="chart">
@@ -34,102 +35,131 @@
         <svg width="960" height="300" id="chartSvg"></svg>
     </div>
 </div>
+
+<script src="./d3.v4.min.js"></script>
 <script>
+    let data = []
+    let newSiteData = []
+    loadMainData().then(response => {
+        return response.json()
+    })
+        .then(resultResponse => {
+            const X = []
+            for (let key in resultResponse) {
+                if (resultResponse.hasOwnProperty(key)) {
+                    X.push([resultResponse[key].score, key])
+                }
+            }
+            let yValue = 0.8
+            let length = X.length
+            for (let i = 0; i < length; i++) {
+                data.push([20 + X[i][0] - Math.random(), yValue * Math.random() + 0.01, X[i][1]])
+            }
+            console.log('data:', data)
+
+            preRender()
+        })
+        .catch(error => {
+            console.log('Error in resultResponse:', error)
+        })
+
+
+    function check() {
+        let url = document.getElementById('checkInput').value
+        loadWebsiteData(url)
+    }
 
     function loadMainData() {
         return fetch('/data', {method: 'get'})
     }
 
     function loadWebsiteData(url) {
+        document.getElementById('loader').style.opacity = '1'
         fetch('/website?hostname=' + encodeURI(url), {method: 'get'})
             .then(response => {
-                console.log(response)
+                return response.json()
+            })
+            .then(result => {
+                let yValue = 0.8
+                newSiteData = [20 + result.score - Math.random(), yValue * Math.random() + 0.01, url]
+                console.log('data:', data)
+                preRender(true)
             })
             .catch(error => {
-                console.log("ERROR");
+                console.log("ERROR:", error)
                 console.error(url)
             })
-    }
-</script>
-<script src="./d3.v4.min.js"></script>
-<script>
-    let data = [];
-    loadMainData().then(response => {
-        return response.json()
-    })
-        .then(resultResponse => {
-            const X = [];
-            for (let key in resultResponse) {
-                if (resultResponse.hasOwnProperty(key)) {
-                    X.push([resultResponse[key].score, key])
-                }
-
-            }
-            let yValue = 0.8;
-            let length = X.length;
-            for (let i = 0; i < length; i++) {
-                data.push([-1 * X[i][0] + Math.random(), yValue * Math.random() + 0.01, X[i][1]])
-            }
-
-            preRender()
-        })
-        .catch(error => {
-            console.log('Error in resultResponse:', error)
-        });
-
-
-    function check() {
-        let url = document.getElementById('checkInput').value;
-        loadWebsiteData(url)
+            .finally(() => {
+                document.getElementById('loader').style.opacity = '0'
+            })
     }
 
-    function addSite(site) {
-        data.push([site.x, site.y])
-    }
-
-    function preRender() {
-
-        const svg = d3.select("svg");
-        const margin = {top: 50, right: 10, bottom: 100, left: 10};
-        const width = +svg.attr("width") - margin.left - margin.right;
-        const height = +svg.attr("height") - margin.top - margin.bottom;
+    function preRender(add = false) {
+        // if (removeOld) d3.select("svg").selectAll("*").remove()
+        const svg = d3.select("svg")
+        const margin = {top: 50, right: 10, bottom: 100, left: 10}
+        const width = +svg.attr("width") - margin.left - margin.right
+        const height = +svg.attr("height") - margin.top - margin.bottom
 
         const g = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
         const x = d3.scaleLinear()
             .domain([-0.5, 20])
-            .range([0, width]);
+            .range([0, width])
 
         const y = d3.scaleLinear()
-            .range([height, 0]);
+            .range([height, 0])
+        if (!add) {
+            const dot = g.append("g")
+                .attr("fill-opacity", 0.5)
+                .style("fill", 'red')
+                .selectAll("circle")
+                .data(data)
+                .enter().append("circle")
+                .attr("transform", function (d) {
+                    return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
+                })
+                .attr("r", 5)
+                .on("mouseleave", function (d) {
+                    document.getElementById("chartText").innerHTML = ""
+                    document.getElementById("chartImg").style.opacity = "0"
+                    d3.select(this).attr("r", 5).style("fill", 'red')
+                })
+                .on("mouseover", function (d) {
+                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100
+                    document.getElementById("chartImg").style.opacity = "1"
+                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico'
+                    d3.select(this).attr("r", 10).style("fill", 'red')
+                })
 
-        const dot = g.append("g")
-            .attr("fill-opacity", 0.5)
-            .style("fill", "red")
-            .selectAll("circle")
-            .data(data)
-            .enter().append("circle")
-            .attr("transform", function (d) {
-                return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
-            })
-            .attr("r", 5)
-            .on("mouseleave", function (d) {
-                document.getElementById("chartText").innerHTML = "";
-                document.getElementById("chartImg").style.opacity = "0";
-                d3.select(this).attr("r", 5).style("fill", "red")
-            })
-            .on("mouseover", function (d) {
-                document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100;
-                document.getElementById("chartImg").style.opacity = "1";
-                document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
-                d3.select(this).attr("r", 10).style("fill", "red")
-            });
-
-        g.append("g")
-            .attr("class", "axisWhite")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).ticks(20))
+            g.append("g")
+                .attr("class", "axisWhite")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x).ticks(20))
+        } else {
+            const dot = g.append("g")
+                .attr("fill-opacity", 0.9)
+                .style("fill", 'white')
+                .selectAll("circle")
+                .data([newSiteData])
+                .enter().append("circle")
+                .attr("transform", function (d) {
+                    return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
+                })
+                .attr("r", 5)
+                .on("mouseleave", function (d) {
+                    document.getElementById("chartText").innerHTML = ""
+                    document.getElementById("chartImg").style.opacity = "0"
+                    d3.select(this).attr("r", 5).style("fill", 'white')
+                })
+                .on("mouseover", function (d) {
+                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100
+                    document.getElementById("chartImg").style.opacity = "1"
+                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico'
+                    d3.select(this).attr("r", 10).style("fill", 'white')
+                })
+        }
     }
 </script>
 
