@@ -48,6 +48,7 @@
     let firstData = [];
     let secondData = [];
     let newSiteData = [];
+    let newSiteDataSecond = [];
     loadFirstData().then(response => {
         return response.json()
     })
@@ -94,6 +95,7 @@
             .then(result => {
                 let yValue = 0.8;
                 newSiteData = [20 + result.score, yValue * Math.random() + 0.01, url];
+                newSiteDataSecond = [result.x, result.y, 20+result.score, url];
                 firstRender(true);
                 secondRender(true)
             })
@@ -256,7 +258,7 @@
                 .attr("fill-opacity", 0.9)
                 .style("fill", 'white')
                 .selectAll("circle")
-                .data([newSiteData])
+                .data([newSiteDataSecond])
                 .enter().append("circle")
                 .attr("transform", function (d) {
                     return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
