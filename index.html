@@ -119,13 +119,31 @@
 
         const y = d3.scaleLinear()
             .range([height, 0])
+
+        svg.append("text")
+            .attr("transform",
+                "translate(" + 25 + " ," +
+                (height + margin.top + 50) + ")")
+            .style("text-anchor", "middle")
+            .style('fill', '#ff0000')
+            .style('font-weight', 'bold')
+            .text("Worst")
+        svg.append("text")
+            .attr("transform",
+                "translate(" + width + " ," +
+                (height + margin.top + 50) + ")")
+            .style("text-anchor", "middle")
+            .style('fill', '#5DCD32')
+            .style('font-weight', 'bold')
+            .text("Best")
         if (!add) {
             const dot = g.append("g")
                 .attr("fill-opacity", 0.5)
-                .style("fill", 'red')
+                //.style('fill', 'url(#svgGradient)')
                 .selectAll("circle")
                 .data(data)
                 .enter().append("circle")
+                .style('fill', 'red')
                 .attr("transform", function (d) {
                     return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
                 })
@@ -133,13 +151,13 @@
                 .on("mouseleave", function (d) {
                     document.getElementById("chartText").innerHTML = ""
                     document.getElementById("chartImg").style.opacity = "0"
-                    d3.select(this).attr("r", 5).style("fill", 'red')
+                    d3.select(this).attr("r", 5)
                 })
                 .on("mouseover", function (d) {
                     document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100
                     document.getElementById("chartImg").style.opacity = "1"
                     document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico'
-                    d3.select(this).attr("r", 10).style("fill", 'red')
+                    d3.select(this).attr("r", 10)
                 })
 
             g.append("g")
