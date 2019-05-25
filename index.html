@@ -32,45 +32,52 @@
             <img src="" id="chartImg">
             <span id="chartText"></span>
         </div>
-        <svg width="960" height="300" id="chartSvg"></svg>
+        <svg width="960" height="300" id="firstSvg"></svg>
+    </div>
+    <div class="chart">
+        <svg width="960" height="800" id="secondSvg"></svg>
     </div>
 </div>
 
 <script src="./d3.v4.min.js"></script>
 <script>
-    let data = [];
+    let firstData = [];
+    let secondData = [];
     let newSiteData = [];
-    loadMainData().then(response => {
+    loadFirstData().then(response => {
         return response.json()
     })
         .then(resultResponse => {
+            console.log("RESULT");
+            console.log(resultResponse);
             loadImagesIntoCash(resultResponse);
             const X = [];
             for (let key in resultResponse) {
                 if (resultResponse.hasOwnProperty(key)) {
-                    X.push([resultResponse[key].score, key])
+                    X.push([resultResponse[key].score, key]);
+                    secondData.push([resultResponse[key].x, resultResponse[key].y])
                 }
             }
             let yValue = 0.8;
             let length = X.length;
             for (let i = 0; i < length; i++) {
-                data.push([20 + X[i][0], yValue * Math.random() + 0.01, X[i][1]])
-            };
-            console.log('data:', data);
+                firstData.push([20 + X[i][0], yValue * Math.random() + 0.01, X[i][1]])
+            }
+            console.log('data:', firstData);
 
-            firstRender()
+            firstRender();
+            secondRender()
         })
         .catch(error => {
             console.log('Error in resultResponse:', error)
         });
-
 
     function check() {
         let url = document.getElementById('checkInput').value;
         loadWebsiteData(url)
     }
 
-    function loadMainData() {
+    function loadFirstData() {
         return fetch('/data', {method: 'get'})
     }
 
@@ -84,6 +91,7 @@
                 let yValue = 0.8;
                 newSiteData = [20 + result.score, yValue * Math.random() + 0.01, url];
                 firstRender(true);
+                secondRender(true)
             })
             .catch(error => {
                 console.log("ERROR:", error);
@@ -104,8 +112,8 @@
 
     function firstRender(add = false) {
         // if (removeOld) d3.select("svg").selectAll("*").remove()
-        const svg = d3.select("#chartSvg");
-        const margin = {top: 50, right: 10, bottom: 100, left: 10};
+        const svg = d3.select("#firstSvg");
+        const margin = {top: 0, right: 10, bottom: 100, left: 10};
         const width = +svg.attr("width") - margin.left - margin.right;
         const height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -118,12 +126,13 @@
 
         const y = d3.scaleLinear()
             .range([height, 0]);
+
         if (!add) {
             const dot = g.append("g")
                 .attr("fill-opacity", 0.5)
                 .style("fill", 'red')
                 .selectAll("circle")
-                .data(data)
+                .data(firstData)
                 .enter().append("circle")
                 .attr("transform", function (d) {
                     return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
@@ -145,6 +154,70 @@
                 .attr("class", "axisWhite")
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x).ticks(20))
+        } else {
+            const dot = g.append("g")
+                .attr("fill-opacity", 0.9)
+                .style("fill", 'white')
+                .selectAll("circle")
+                .data([newSiteData])
+                .enter().append("circle")
+                .attr("transform", function (d) {
+                    return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
+                })
+                .attr("r", 5)
+                .on("mouseleave", function (d) {
+                    document.getElementById("chartText").innerHTML = "";
+                    document.getElementById("chartImg").style.opacity = "0";
+                    d3.select(this).attr("r", 5).style("fill", 'white')
+                })
+                .on("mouseover", function (d) {
+                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100;
+                    document.getElementById("chartImg").style.opacity = "1";
+                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
+                    d3.select(this).attr("r", 10).style("fill", 'white')
+                })
+        }
+    }
+
+    function secondRender(add = false) {
+        // if (removeOld) d3.select("svg").selectAll("*").remove()
+        const svg = d3.select("#secondSvg");
+        const margin = {top: 0, right: 0, bottom: 0, left: 100};
+        const width = +svg.attr("width") - margin.left - margin.right;
+        const height = +svg.attr("height") - margin.top - margin.bottom;
+
+        const g = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        const x = d3.scaleLinear()
+            .domain([-6, 14])
+            .range([0, width]);
+
+        const y = d3.scaleLinear()
+            .domain([-7, 13])
+            .range([height, 0]);
+        if (!add) {
+            const dot = g.append("g")
+                .attr("fill-opacity", 0.5)
+                .style("fill", 'red')
+                .selectAll("circle")
+                .data(secondData)
+                .enter().append("circle")
+                .attr("transform", function (d) {
+                    return "translate(" + x(d[0]) + "," + y(d[1]) + ")"
+                })
+                .attr("r", 5)
+                .on("mouseleave", function (d) {
+                    document.getElementById("chartText").innerHTML = "";
+                    document.getElementById("chartImg").style.opacity = "0";
+                    d3.select(this).attr("r", 5).style("fill", 'red')
+                })
+                .on("mouseover", function (d) {
+                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100;
+                    document.getElementById("chartImg").style.opacity = "1";
+                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
+                    d3.select(this).attr("r", 10).style("fill", 'red')
+                });
         } else {
             const dot = g.append("g")
                 .attr("fill-opacity", 0.9)
