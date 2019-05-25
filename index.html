@@ -44,6 +44,7 @@
         return response.json()
     })
         .then(resultResponse => {
+            loadImagesIntoCash(resultResponse);
             const X = [];
             for (let key in resultResponse) {
                 if (resultResponse.hasOwnProperty(key)) {
@@ -54,7 +55,7 @@
             let length = X.length;
             for (let i = 0; i < length; i++) {
                 data.push([20 + X[i][0], yValue * Math.random() + 0.01, X[i][1]])
-            }
+            };
             console.log('data:', data);
 
             firstRender()
@@ -81,9 +82,8 @@
             })
             .then(result => {
                 let yValue = 0.8;
-                newSiteData = [20 + result.score - Math.random(), yValue * Math.random() + 0.01, url];
-                console.log('data:', data);
-                firstRender(true)
+                newSiteData = [20 + result.score, yValue * Math.random() + 0.01, url];
+                firstRender(true);
             })
             .catch(error => {
                 console.log("ERROR:", error);
@@ -93,6 +93,14 @@
                 document.getElementById('loader').style.opacity = '0'
             })
     }
+
+    function loadImagesIntoCash(objectOfUrls) {
+        Object.keys(objectOfUrls).forEach(url => {
+            let img = document.createElement('img');
+            img.src = 'http://' + url + '/favicon.ico'
+        })
+    }
+
 
     function firstRender(add = false) {
         // if (removeOld) d3.select("svg").selectAll("*").remove()
