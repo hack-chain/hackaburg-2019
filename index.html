@@ -59,7 +59,7 @@
             for (let key in resultResponse) {
                 if (resultResponse.hasOwnProperty(key)) {
                     X.push([resultResponse[key].score, key]);
-                    secondData.push([resultResponse[key].x, resultResponse[key].y, -1*resultResponse[key].score, key])
+                    secondData.push([resultResponse[key].x, resultResponse[key].y, 20+resultResponse[key].score, key])
                 }
             }
             let yValue = 0.8;
@@ -167,7 +167,7 @@
                     d3.select(this).attr("r", 5)
                 })
                 .on("mouseover", function (d) {
-                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100
+                    document.getElementById("chartText").innerHTML = d[2] + ' <b>' + Math.round(d[0] * 100) / 100 + '</b>';
                     document.getElementById("chartImg").style.opacity = "1"
                     document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
                     d3.select(this).attr("r", 10)
@@ -221,8 +221,8 @@
             .range([height, 0]);
 
         let color = score => {
-            let start = [240, 146, 114];
-            let end = [165, 15, 20];
+            let end = [240, 146, 114];
+            let start = [165, 15, 20];
             console.log(score);
             return 'rgb(' + ((end[0] - start[0]) / 20.0 * score + start[0]).toString() +
                 ',' + ((end[1] - start[1]) * score / 20.0 + start[1]).toString() +
@@ -246,7 +246,7 @@
                     d3.select(this).attr("r", 5).style("fill", color(d[2]))
                 })
                 .on("mouseover", function (d) {
-                    document.getElementById("chartText2").innerHTML = d[3] + ' <b>' + Math.round(d[0] * 100) / 100 + '</b>';
+                    document.getElementById("chartText2").innerHTML = d[3] + ' <b>' + Math.round(d[2] * 100) / 100 + '</b>';
                     document.getElementById("chartImg2").style.opacity = "1";
                     document.getElementById("chartImg2").src = 'http://' + d[3] + '/favicon.ico';
                     d3.select(this).attr("r", 10).style("fill", color(d[2]))
@@ -268,7 +268,7 @@
                     d3.select(this).attr("r", 5).style("fill", 'white')
                 })
                 .on("mouseover", function (d) {
-                    document.getElementById("chartText2").innerHTML = d[3] + ', ' + Math.round(d[0] * 100) / 100;
+                    document.getElementById("chartText2").innerHTML = d[3] + ' <b>' + Math.round(d[2] * 100) / 100 + '</b>';
                     document.getElementById("chartImg2").style.opacity = "1";
                     document.getElementById("chartImg2").src = 'http://' + d[3] + '/favicon.ico';
                     d3.select(this).attr("r", 10).style("fill", 'white')
