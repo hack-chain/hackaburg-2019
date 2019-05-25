@@ -95,19 +95,6 @@ class Predictor():
             result.append(1)
         else:
             result.append(0)
-        result.append(data["tracking"]["num_tracker_requests"])
-        result.append(data["tracking"]["num_tracker_cookies"])
-            
-        for tp in third_parties:
-            if tp in data["third_parties"]["fqdns"]:
-                result.append(1)
-            else:
-                result.append(0)
-        result.append(data["third_parties"]["num_http_requests"] + data["third_parties"]["num_https_requests"])
-        if data["fingerprinting"]["canvas"]["is_fingerprinting"]:
-            result.append(1)
-        else:
-            result.append(0)
             
         return result
         
