@@ -54,7 +54,7 @@
             let yValue = 0.8
             let length = X.length
             for (let i = 0; i < length; i++) {
-                data.push([20 + X[i][0] - Math.random(), yValue * Math.random() + 0.01, X[i][1]])
+                data.push([20 + X[i][0], yValue * Math.random() + 0.01, X[i][1]])
             }
 
             preRender()
@@ -81,7 +81,7 @@
             })
             .then(result => {
                 let yValue = 0.8
-                newSiteData = [20 + result.score - Math.random(), yValue * Math.random() + 0.01, url]
+                newSiteData = [20 + result.score, yValue * Math.random() + 0.01, url]
                 preRender(true)
             })
             .catch(error => {
