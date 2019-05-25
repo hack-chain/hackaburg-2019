@@ -35,27 +35,6 @@
     </div>
 </div>
 <script>
-    const IP = '34.65.75.228'
-
-    // Example:
-    // let response1 = {
-    //     'websites': {
-    //         'g.com': {
-    //             x: -0.5,
-    //             y:
-    //                 0.3,
-    //             score:
-    //                 2
-    //         },
-    //         'ya.com': {
-    //             x: -0.54,
-    //             y:
-    //                 0.13,
-    //             score:
-    //                 5
-    //         }
-    //     }
-    // }
 
     function loadMainData() {
         return fetch('/data', {method: 'get'})
@@ -64,40 +43,30 @@
     function loadWebsiteData(url) {
         fetch('/website?hostname=' + encodeURI(url), {method: 'get'})
             .then(response => {
-                addSite(response.json())
-                preRender()
+                console.log(response)
             })
             .catch(error => {
-                console.error(error)
+                console.log("ERROR");
+                console.error(url)
             })
     }
-
-    function loadImagesIntoCash(objectOfUrls) {
-        // let div = document.createElement('div')
-        Object.keys(objectOfUrls).forEach(url => {
-            let img = document.createElement('img')
-            img.src = 'http://' + url + '/favicon.ico'
-            // div.appendChild(img)
-        })
-    }
 </script>
-<script src="/d3.v4.min.js"></script>
+<script src="./d3.v4.min.js"></script>
 <script>
-    let resultResponse = {}
-    let data = []
+    let data = [];
     loadMainData().then(response => {
         return response.json()
     })
         .then(resultResponse => {
-            const X = []
+            const X = [];
             for (let key in resultResponse) {
                 if (resultResponse.hasOwnProperty(key)) {
                     X.push([resultResponse[key].score, key])
                 }
 
             }
-            let yValue = 0.8
-            let length = 96
+            let yValue = 0.8;
+            let length = X.length;
             for (let i = 0; i < length; i++) {
                 data.push([-1 * X[i][0] + Math.random(), yValue * Math.random() + 0.01, X[i][1]])
             }
@@ -106,11 +75,11 @@
         })
         .catch(error => {
             console.log('Error in resultResponse:', error)
-        })
+        });
 
 
     function check() {
-        let url = document.getElementById('checkInput').value
+        let url = document.getElementById('checkInput').value;
         loadWebsiteData(url)
     }
 
@@ -118,123 +87,22 @@
         data.push([site.x, site.y])
     }
 
-    // resultResponse = {
-    //     "10086.cn": -0.0,
-    //     "accuweather.com": -16.3,
-    //     "adobe.com": -2.2,
-    //     "aliexpress.com": -1.8,
-    //     "amazon.co.jp": -3.4000000000000004,
-    //     "amazon.com": -4.3,
-    //     "amazon.co.uk": -3.2,
-    //     "amazon.de": -3.2,
-    //     "amazon.in": -3.2,
-    //     "ampproject.org": -0.0,
-    //     "apple.com": -0.0,
-    //     "baidu.com": -0.0,
-    //     "bbc.com": -4.2,
-    //     "bbc.co.uk": -3.7,
-    //     "bilibili.com": -10.0,
-    //     "bing.com": -0.0,
-    //     "bit.ly": -1.8,
-    //     "booking.com": -0.9,
-    //     "chaturbate.com": -11.6,
-    //     "cnn.com": -18.7,
-    //     "craigslist.org": -0.0,
-    //     "cricbuzz.com": -1.3,
-    //     "discordapp.com": -1.0,
-    //     "docomo.ne.jp": -0.30000000000000004,
-    //     "duckduckgo.com": -0.0,
-    //     "ebay.com": -7.4,
-    //     "espn.com": -3.0,
-    //     "facebook.com": -0.0,
-    //     "fandom.com": -7.4,
-    //     "fc2.com": -1.3,
-    //     "foxnews.com": -11.9,
-    //     "github.com": -1.0,
-    //     "globo.com": -2.9000000000000004,
-    //     "google.co.in": -0.0,
-    //     "google.co.jp": -0.0,
-    //     "google.com.br": -0.0,
-    //     "google.com": -0.0,
-    //     "google.com.tr": -0.0,
-    //     "google.co.uk": -0.0,
-    //     "google.de": -0.1,
-    //     "google.es": -0.1,
-    //     "google.fr": -0.0,
-    //     "google.it": -0.1,
-    //     "google.pl": -0.2,
-    //     "google.ru": -0.0,
-    //     "imdb.com": -4.5,
-    //     "imgur.com": -5.1,
-    //     "indeed.com": -1.4,
-    //     "instagram.com": -0.0,
-    //     "linkedin.com": -1.0,
-    //     "live.com": -0.2,
-    //     "livejasmin.com": -12.0,
-    //     "mail.ru": -17.6,
-    //     "microsoft.com": -5.6000000000000005,
-    //     "msn.com": -7.9,
-    //     "naver.com": -0.0,
-    //     "netflix.com": -0.30000000000000004,
-    //     "news.google.com": -1.0,
-    //     "news.yahoo.co.jp": -0.5,
-    //     "news.yandex.ru": -0.0,
-    //     "office.com": -0.5,
-    //     "ok.ru": -7.7,
-    //     "outbrain.com": -3.6,
-    //     "paypal.com": -1.8,
-    //     "pinterest.com": -0.0,
-    //     "pornhub.com": -0.4,
-    //     "quora.com": -1.2,
-    //     "rakuten.co.jp": -0.0,
-    //     "reddit.com": -0.0,
-    //     "redtube.com": -0.5,
-    //     "samsung.com": -4.3,
-    //     "sm.cn": -0.5,
-    //     "sogou.com": -0.0,
-    //     "sohu.com": -0.0,
-    //     "stackoverflow.com": -1.3,
-    //     "taboola.com": -7.5,
-    //     "taobao.com": -1.6,
-    //     "toutiao.com": -10.2,
-    //     "tribunnews.com": -0.0,
-    //     "tumblr.com": -2.3,
-    //     "twitch.tv": -3.4000000000000004,
-    //     "twitter.com": -0.0,
-    //     "uol.com.br": -6.1000000000000005,
-    //     "vk.com": -10.2,
-    //     "whatsapp.com": -0.0,
-    //     "wikipedia.org": -0.0,
-    //     "wordpress.com": -1.8,
-    //     "xhamster.com": -0.2,
-    //     "xnxx.com": -0.0,
-    //     "xvideos.com": -0.0,
-    //     "yahoo.co.jp": -0.6000000000000001,
-    //     "yahoo.com": -0.8,
-    //     "yandex.ru": -0.1,
-    //     "youporn.com": -0.2,
-    //     "youtu.be": -0.4,
-    //     "youtube.com": -0.1
-    // }
-    // loadImagesIntoCash(resultResponse)
-
-
     function preRender() {
 
-        const svg = d3.select("svg")
-        const margin = {top: 50, right: 10, bottom: 100, left: 10}
-        const width = +svg.attr("width") - margin.left - margin.right
-        const height = +svg.attr("height") - margin.top - margin.bottom
+        const svg = d3.select("svg");
+        const margin = {top: 50, right: 10, bottom: 100, left: 10};
+        const width = +svg.attr("width") - margin.left - margin.right;
+        const height = +svg.attr("height") - margin.top - margin.bottom;
 
         const g = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         const x = d3.scaleLinear()
             .domain([-0.5, 20])
-            .range([0, width])
+            .range([0, width]);
 
         const y = d3.scaleLinear()
-            .range([height, 0])
+            .range([height, 0]);
 
         const dot = g.append("g")
             .attr("fill-opacity", 0.5)
@@ -247,16 +115,16 @@
             })
             .attr("r", 5)
             .on("mouseleave", function (d) {
-                document.getElementById("chartText").innerHTML = ""
-                document.getElementById("chartImg").style.opacity = "0"
+                document.getElementById("chartText").innerHTML = "";
+                document.getElementById("chartImg").style.opacity = "0";
                 d3.select(this).attr("r", 5).style("fill", "red")
             })
             .on("mouseover", function (d) {
-                document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100
-                document.getElementById("chartImg").style.opacity = "1"
-                document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico'
+                document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100;
+                document.getElementById("chartImg").style.opacity = "1";
+                document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
                 d3.select(this).attr("r", 10).style("fill", "red")
-            })
+            });
 
         g.append("g")
             .attr("class", "axisWhite")
