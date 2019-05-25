@@ -35,6 +35,10 @@
         <svg width="960" height="300" id="firstSvg"></svg>
     </div>
     <div class="chart">
+        <div id="chartFloatWindow2">
+            <img src="" id="chartImg2" height="30">
+            <span id="chartText2"></span>
+        </div>
         <svg width="960" height="800" id="secondSvg"></svg>
     </div>
 </div>
@@ -55,7 +59,7 @@
             for (let key in resultResponse) {
                 if (resultResponse.hasOwnProperty(key)) {
                     X.push([resultResponse[key].score, key]);
-                    secondData.push([resultResponse[key].x, resultResponse[key].y, -1*resultResponse[key].score])
+                    secondData.push([resultResponse[key].x, resultResponse[key].y, -1*resultResponse[key].score, key])
                 }
             }
             let yValue = 0.8;
@@ -132,7 +136,7 @@
                 (height + margin.top + 50) + ")")
             .style("text-anchor", "middle")
             .style('fill', '#FFFFFF')
-            .style('font-size', '1.5em')
+            .style('font-size', '1.2em')
             .style('font-weight', 'bold')
             .text("Worst");
         svg.append("text")
@@ -141,7 +145,7 @@
                 (height + margin.top + 50) + ")")
             .style("text-anchor", "middle")
             .style('fill', '#FFFFFF')
-            .style('font-size', '1.5em')
+            .style('font-size', '1.2em')
             .style('font-weight', 'bold')
             .text("Best");
 
@@ -190,7 +194,7 @@
                     d3.select(this).attr("r", 5).style("fill", 'white')
                 })
                 .on("mouseover", function (d) {
-                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100;
+                    document.getElementById("chartText").innerHTML = d[2] + ' <b>' + Math.round(d[0] * 100) / 100 + '</b>';
                     document.getElementById("chartImg").style.opacity = "1";
                     document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
                     d3.select(this).attr("r", 10).style("fill", 'white')
@@ -237,14 +241,14 @@
                 })
                 .attr("r", 5)
                 .on("mouseleave", function (d) {
-                    document.getElementById("chartText").innerHTML = "";
-                    document.getElementById("chartImg").style.opacity = "0";
+                    document.getElementById("chartText2").innerHTML = "";
+                    document.getElementById("chartImg2").style.opacity = "0";
                     d3.select(this).attr("r", 5).style("fill", color(d[2]))
                 })
                 .on("mouseover", function (d) {
-                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100;
-                    document.getElementById("chartImg").style.opacity = "1";
-                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
+                    document.getElementById("chartText2").innerHTML = d[3] + ' <b>' + Math.round(d[0] * 100) / 100 + '</b>';
+                    document.getElementById("chartImg2").style.opacity = "1";
+                    document.getElementById("chartImg2").src = 'http://' + d[3] + '/favicon.ico';
                     d3.select(this).attr("r", 10).style("fill", color(d[2]))
                 });
         } else {
@@ -259,14 +263,14 @@
                 })
                 .attr("r", 5)
                 .on("mouseleave", function (d) {
-                    document.getElementById("chartText").innerHTML = "";
-                    document.getElementById("chartImg").style.opacity = "0";
+                    document.getElementById("chartText2").innerHTML = "";
+                    document.getElementById("chartImg2").style.opacity = "0";
                     d3.select(this).attr("r", 5).style("fill", 'white')
                 })
                 .on("mouseover", function (d) {
-                    document.getElementById("chartText").innerHTML = d[2] + ', ' + Math.round(d[0] * 100) / 100;
-                    document.getElementById("chartImg").style.opacity = "1";
-                    document.getElementById("chartImg").src = 'http://' + d[2] + '/favicon.ico';
+                    document.getElementById("chartText2").innerHTML = d[3] + ', ' + Math.round(d[0] * 100) / 100;
+                    document.getElementById("chartImg2").style.opacity = "1";
+                    document.getElementById("chartImg2").src = 'http://' + d[3] + '/favicon.ico';
                     d3.select(this).attr("r", 10).style("fill", 'white')
                 })
         }

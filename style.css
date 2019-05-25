@@ -144,6 +144,26 @@ h1, h2 {
     top: 20px;
 }
 
+#chartText2 {
+    position: relative;
+    font-size: 30px;
+    color: #f4f4f4;
+    margin-left: 10px;
+    top: -5px;
+}
+
+#chartImg2 {
+    height: 30px;
+    opacity: 0;
+}
+
+#chartFloatWindow2 {
+    height: 40px;
+    position: relative;
+    top: 360px;
+    left: calc(50% - 50px);
+}
+
 #chartSvg {
     position: relative;
     top: -40px;
